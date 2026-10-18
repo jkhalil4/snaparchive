@@ -29,11 +29,7 @@ def normalize_kind(value: object) -> str | None:
 
 
 def parse_snap_date(value: object) -> datetime | None:
-    """Parse a memories_history date ("2025-07-04 21:30:15 UTC") into an aware UTC datetime.
-
-    ISO 8601 strings and epoch seconds/milliseconds are accepted too, in case the
-    export format drifts again.
-    """
+    """Parse "2025-07-04 21:30:15 UTC", ISO 8601, or epoch seconds/milliseconds into aware UTC."""
     if value is None or isinstance(value, bool):
         return None
     if isinstance(value, (int, float)) or (isinstance(value, str) and value.strip().isdigit()):
@@ -63,10 +59,7 @@ def parse_snap_date(value: object) -> datetime | None:
 
 
 def parse_location(value: object) -> tuple[float | None, float | None]:
-    """Parse "Latitude, Longitude: 40.1, -83.0" (and looser variants) into a coordinate pair.
-
-    Snapchat writes 0.0, 0.0 when it has no fix, so that is treated as missing.
-    """
+    """Parse "Latitude, Longitude: 40.1, -83.0" into (lat, lon). Snapchat's 0.0, 0.0 means no fix."""
     lat = lon = None
     if isinstance(value, dict):
         lowered = {str(k).lower(): v for k, v in value.items()}

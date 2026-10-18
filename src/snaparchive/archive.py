@@ -1,9 +1,8 @@
-"""The destination folder: what is already archived, file naming, and safe installs.
+"""The archive folder: what it already holds, file naming, and installing new files.
 
-Archive files are named ``YYYY-MM-DD_HHMMSS_<Image|Video>_<ID8>.<ext>`` where the
-time is the capture time in UTC and ID8 is the first 8 characters of Snapchat's
-memory UUID. The filename alone is enough to tell what is archived, so the
-manifest kept next to the archive is a record, not a dependency.
+Files are named ``YYYY-MM-DD_HHMMSS_<Image|Video>_<ID8>.<ext>`` (capture time in
+UTC, first 8 characters of Snapchat's memory UUID). Dedupe works from the names
+alone; the manifest is an extra record.
 """
 
 from __future__ import annotations
@@ -91,13 +90,10 @@ class Archive:
         return self.files[-1].taken if self.files else None
 
     def classify(self, memories: list[Memory]) -> list[tuple[Memory, str]]:
-        """Label each memory "new", or with how it was found in the archive.
+        """Label each memory "new", or by how it matched an archived file.
 
-        A memory is already archived if its full UUID is in the manifest, if a file
-        carries its 8-character ID, or (for files named some other way) if a file
-        of the same type was captured within 2 seconds. Each archive file can
-        vouch for one memory only, so two memories from the same second still
-        get counted separately.
+        "manifest": full UUID recorded; "id": 8-character ID in a file name;
+        "time": same type captured within 2 s. Each file matches one memory at most.
         """
         by_id: dict[str, list[int]] = defaultdict(list)
         by_kind: dict[str, list[int]] = defaultdict(list)  # indices in time order

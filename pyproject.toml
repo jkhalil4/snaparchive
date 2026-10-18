@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "snaparchive"
 dynamic = ["version"]
-description = "Keep a local archive of your Snapchat Memories up to date, with overlays merged back in"
+description = "Incrementally archive Snapchat Memories exports, with overlays merged and dates and GPS embedded"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"

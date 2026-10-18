@@ -1,11 +1,8 @@
-"""Turn one memory's raw files into a finished archive file.
+"""Render one memory's files into the finished archive file.
 
-* No overlay: the original bytes are kept and only metadata is added (lossless).
-* Image + overlay: alpha-composited with Pillow, saved as JPEG quality 95, 4:4:4.
-* Video + overlay: composited with ffmpeg into H.264 (CRF 18), audio copied.
-
-Metadata written: capture time (UTC, with an explicit +00:00 offset on images)
-and GPS when Snapchat recorded a location.
+No overlay: the original is copied and only metadata is added. Photo + overlay:
+Pillow, JPEG quality 95, 4:4:4. Video + overlay: ffmpeg, H.264 CRF 18, audio
+copied. Capture time is written in UTC (+00:00 offset on photos), plus GPS.
 """
 
 from __future__ import annotations
@@ -168,10 +165,9 @@ _SWS_MATRIX = {"bt709": "bt709", "smpte170m": "bt601", "bt470bg": "bt601", "fcc"
 
 
 def video_filter(info: dict, shortest: bool) -> str:
-    """Filter graph that lays input 1 (the overlay) over input 0 (the video).
+    """Overlay input 1 on input 0.
 
-    8-bit video is composited in RGB so the overlay keeps its exact colours even on
-    Snapchat's full-range ("yuvj") footage; the range and matrix are restored after.
+    8-bit video is composited in RGB so overlay colours stay exact on full-range footage.
     """
     w, h = info["width"], info["height"]
     full = info["color_range"] == "pc" or info["pix_fmt"].startswith("yuvj")
@@ -213,9 +209,7 @@ def composite_video(main: Path, overlay: Path, overlay_type: str | None, out: Pa
         if info[key] and info[key] != "unknown":
             color += [flag, info[key]]
     if info["color_space"] in ("", "unknown"):
-        # Snapchat leaves the matrix unset; players assume BT.709 for HD, which is what
-        # video_filter() used, so say so and the overlay's colours decode exactly
-        color += ["-colorspace", "bt709"]
+        color += ["-colorspace", "bt709"]  # untagged source; video_filter() assumed BT.709
 
     cmd = [opts.ffmpeg, "-nostdin", "-hide_banner", "-loglevel", "error", "-y", *inputs,
            "-filter_complex", graph, "-map", "[v]", "-map", "0:a?", *codec, *color]
@@ -326,10 +320,9 @@ class Rendered:
 
 
 def render(mem: Memory, main: Path, overlay: Path | None, workdir: Path, opts: EncodeOptions) -> Rendered:
-    """Produce the finished file for a memory inside workdir.
+    """Write the finished file for a memory into workdir.
 
-    A memory is never dropped because its overlay is broken: the original is kept
-    instead and the reason is reported (the export still holds the raw overlay).
+    If the overlay can't be merged, the original is used and Rendered.overlay says why.
     """
     main_type = sniff(main)
     kind = kind_of(main_type)

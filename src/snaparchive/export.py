@@ -1,17 +1,10 @@
-"""Read Snapchat "Download My Data" exports and turn them into a list of memories.
+"""Read Snapchat "Download My Data" exports into a list of memories.
 
-An export can arrive as one or more ZIP files (large exports are split into
-several parts), as an already-extracted folder, or as a bare
-memories_history.json/.html. Two layouts exist in the wild:
-
-* Bundled media (2025+): ``memories/<YYYY-MM-DD>_<UUID>-main.<ext>`` plus an
-  optional ``-overlay.<ext>`` holding the caption/stickers. The JSON keeps the
-  capture time and GPS but no filenames, so rows are joined to files by ID or
-  by timestamp.
-* Links only (older): every JSON row carries a signed download link and the
-  media has to be fetched from Snapchat (see download.py).
-
-Both can occur in the same export, so everything is read into one pool first.
+Inputs can be ZIPs (including split exports), extracted folders, or a bare
+memories_history.json/.html. Newer exports bundle the media as
+``memories/<YYYY-MM-DD>_<UUID>-main.<ext>`` with an optional ``-overlay.<ext>``;
+their JSON has dates and GPS but no file names, so rows are matched to files by
+ID or timestamp. Older exports only carry download links (see download.py).
 """
 
 from __future__ import annotations

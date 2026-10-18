@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
-# Cron job for a Nextcloud AIO host: ingest Snapchat exports dropped into
-# <ARCHIVE_ROOT>/_inbox, then rescan the folder, reindex Memories and send a
-# Nextcloud notification. Does nothing (and prints nothing) while the inbox is
-# empty or an upload is still in progress.
+# Cron job: import Snapchat exports from <ARCHIVE_ROOT>/_inbox, then rescan
+# Nextcloud, reindex Memories and send a notification. Silent when idle.
 #
 #   */15 * * * * /path/to/snaparchive-inbox.sh >> ~/.local/state/snaparchive/inbox.log 2>&1
 set -euo pipefail

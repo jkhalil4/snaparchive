@@ -1,8 +1,5 @@
-"""Drop-folder automation: ingest whatever export files appear in an inbox folder.
-
-Meant to run from cron. Each run either does nothing (empty inbox, or files
-still uploading), or ingests everything in the inbox as one batch and then moves
-those files into the exports folder, so the raw export is kept as-is.
+"""Drop-folder mode for cron: once the inbox stops changing, ingest it as one batch
+and move the files to the exports folder.
 """
 
 from __future__ import annotations

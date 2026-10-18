@@ -1,15 +1,9 @@
-"""Fetch memories that an export lists only as download links.
+"""Download memories from exports that only list download links.
 
-Older exports (and possibly future ones) have no media inside the ZIP. Each
-row of memories_history carries a signed link instead:
-
-* "Media Download Url" / ``downloadMemories(url, this, true)``: plain GET.
-* "Download Link" (``app.snapchat.com/dmd/memories?...``): POST the query string
-  to the endpoint, which answers with a short-lived CDN URL to GET.
-
-The CDN answers with the media itself, or with a ZIP holding ``-main`` and
-``-overlay`` files when the memory has a caption or stickers. Links expire a few
-days after the export is generated; then the only fix is a fresh export.
+"Media Download Url" links are fetched directly. "Download Link" (dmd) links
+need the query string POSTed first, which returns a CDN URL. The CDN serves the
+media, or a ZIP with -main and -overlay files. Links expire a few days after the
+export is created.
 """
 
 from __future__ import annotations
