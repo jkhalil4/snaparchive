@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snaparchive"
+dynamic = ["version"]
+description = "Keep a local archive of your Snapchat Memories up to date, with overlays merged back in"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = ["Pillow>=9.1"]
+keywords = ["snapchat", "memories", "backup", "archive", "ffmpeg", "exif", "nextcloud"]
+classifiers = [
+    "Environment :: Console",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: System :: Archiving :: Backup",
+]
+
+[project.scripts]
+snaparchive = "snaparchive.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "snaparchive.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

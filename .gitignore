@@ -1,0 +1,22 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.snaparchive/
+
+# local deployment settings
+*.env
+!*.env.example
+
+# never commit an export or your memories
+*.zip
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.heic
+*.mp4
+*.mov
+memories_history.*
